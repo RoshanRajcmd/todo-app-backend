@@ -20,7 +20,7 @@ Run `npm start` for a dev server. Navigate to `http://localhost:3000/` in a brow
 
 *For Server*
 
-Run `go run main.go`. Change the DB hosting post from 5432 to your local hosting and post. You need to manually restart the server if you change any of the source files.
+Run `go run main.go`. Change the DB hosting post from `5432` to your local hosting and post. You need to manually restart the server if you change any of the source files.
 
 ## Screenshots
 
