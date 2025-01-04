@@ -2,8 +2,13 @@ package models
 
 import "gorm.io/gorm"
 
-type Todo struct {
+type Task struct {
 	gorm.Model
 	Content string
-	Status  bool
+	IsRead  bool
+}
+
+// Constructor function
+func NewTask(content string, isRead bool) *Task {
+	return &Task{Content: content, IsRead: isRead}
 }

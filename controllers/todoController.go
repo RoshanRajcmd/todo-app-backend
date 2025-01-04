@@ -6,17 +6,18 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func TodosCreate(c *gin.Context) {
+func CreateTask(c *gin.Context) {
 	// Get data from req body
 	var body struct {
-		Content string
-		Status  bool
+		content string
+		isRead  bool
 	}
 	c.Bind(&body)
 
 	// Create a todo
-	var todo = models.Todo{Content: body.Content, Status: body.Status}
-	var result = initializers.DB.Create(&todo)
+	//var task = models.Task{Content: body.content, IsRead: body.isRead}
+	var task = models.NewTask(body.content, body.isRead)
+	var result = initializers.DB.Create(&task)
 
 	if result.Error != nil {
 		c.Status(400)
@@ -25,36 +26,39 @@ func TodosCreate(c *gin.Context) {
 
 	// Return it
 	c.JSON(200, gin.H{
-		"todo": todo,
+		"data":    task,
+		"message": "Task Created Successfully",
 	})
 }
 
-func TodosIndex(c *gin.Context) {
-	// Get all the todos
-	var todos []models.Todo
-	initializers.DB.Find(&todos)
+func GetAllTasks(c *gin.Context) {
+	// Get all the tasks
+	var tasks []models.Task
+	initializers.DB.Find(&tasks)
 
 	// Return todos in response
 	c.JSON(200, gin.H{
-		"todos": todos,
+		"data":    tasks,
+		"message": "Fetched Successfully",
 	})
 }
 
-func TodosShow(c *gin.Context) {
+func GetTaskById(c *gin.Context) {
 	// Get id from URL param
-	var id = c.Param("id")
+	var taskId = c.Param("id")
 
-	// Get a sing todo
-	var todo models.Todo
-	initializers.DB.First(&todo, id)
+	// Get a get the task todo
+	var task models.Task
+	initializers.DB.First(&task, taskId)
 
 	// Return todo in response
 	c.JSON(200, gin.H{
-		"todo": todo,
+		"data":    task,
+		"message": "Fetched Successfully",
 	})
 }
 
-func TodosUpdate(c *gin.Context) {
+func UpdateTask(c *gin.Context) {
 	// Get id from URL param
 	var id = c.Param("id")
 
@@ -66,30 +70,45 @@ func TodosUpdate(c *gin.Context) {
 	c.Bind(&body)
 
 	// Get a single todo that we want to update
-	var todo models.Todo
+	var todo models.Task
 	initializers.DB.First(&todo, id)
 
 	// Update it
-	initializers.DB.Model(&todo).Updates(models.Todo{
+	initializers.DB.Model(&todo).Updates(models.Task{
 		Content: body.Content,
-		Status:  body.Status,
+		IsRead:  body.Status,
 	})
 
 	// Return response
 	c.JSON(200, gin.H{
-		"todo": todo,
+		"data":    todo,
+		"message": "Updated Task Successfully",
 	})
 }
 
-func TodosDelete(c *gin.Context) {
+func DeleteTask(c *gin.Context) {
 	// Get id from URL param
 	var id = c.Param("id")
 
 	// Delete the Todo
-	initializers.DB.Delete(&models.Todo{}, id)
+	var response = initializers.DB.Delete(&models.Task{}, id)
 
-	// Return response
-	c.JSON(200, gin.H{
-		"message": "Todo removed Successfully",
-	})
+	if response.Error != nil {
+		// if dbErr, ok := response.Error.(); ok {
+		// 	switch dbErr.Number {
+		// 	case 1062: // MySQL code for duplicate entry
+		// 		// Handle duplicate entry
+		// 	// Add cases for other specific error codes
+		// 	default:
+		// 		// Handle other errors
+		// 	}
+		// } else {
+		// 	// Handle non-MySQL errors or unknown errors
+		// }
+	} else {
+		// Return response
+		c.JSON(200, gin.H{
+			"message": "Task removed Successfully",
+		})
+	}
 }

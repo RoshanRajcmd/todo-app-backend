@@ -7,16 +7,15 @@ import (
 )
 
 func init() {
-	initializers.LoadEnvVariables()
 	initializers.ConnectDB()
 }
 
 func main() {
 
-	var r = gin.Default()
+	var app = gin.Default()
 
 	// Todo Routes
-	routes.TodoRoutes(r)
+	routes.TodoRoutes(app)
 
-	r.Run()
+	app.Run()
 }

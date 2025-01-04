@@ -8,11 +8,16 @@ import (
 func TodoRoutes(r *gin.Engine) {
 	var userGroup = r.Group("/todos")
 	{
-		// Todo Routes
-		userGroup.POST("", controllers.TodosCreate)       // Create
-		userGroup.GET("", controllers.TodosIndex)         // Read all
-		userGroup.GET("/:id", controllers.TodosShow)      // Read One
-		userGroup.PUT("/:id", controllers.TodosUpdate)    // Update
-		userGroup.DELETE("/:id", controllers.TodosDelete) // Delete
+		// Task Routes
+		//Create a Task
+		userGroup.POST("/createTask", controllers.CreateTask)
+		// Read all
+		userGroup.GET("/getAllTasks", controllers.GetAllTasks)
+		// Read One
+		userGroup.GET("/getTaskById/:id", controllers.GetTaskById)
+		// Update
+		userGroup.PUT("/updateTask/:id", controllers.UpdateTask)
+		// Delete
+		userGroup.DELETE("/deleteTask/:id", controllers.DeleteTask)
 	}
 }
