@@ -1,22 +1,25 @@
 package controllers
 
 import (
+	"fmt"
+
 	"github.com/RoshanRajcmd/todo-app-backend/initializers"
 	"github.com/RoshanRajcmd/todo-app-backend/models"
 	"github.com/gin-gonic/gin"
+	"github.com/jackc/pgx/v5/pgconn"
 )
 
 func CreateTask(c *gin.Context) {
 	// Get data from req body
 	var body struct {
-		content string
-		isRead  bool
+		Content string
+		IsRead  bool
 	}
 	c.Bind(&body)
 
 	// Create a todo
-	//var task = models.Task{Content: body.content, IsRead: body.isRead}
-	var task = models.NewTask(body.content, body.isRead)
+	//var task = models.Task{Content: body.Content, IsRead: body.IsRead}
+	var task = models.NewTask(body.Content, body.IsRead)
 	var result = initializers.DB.Create(&task)
 
 	if result.Error != nil {
@@ -49,13 +52,24 @@ func GetTaskById(c *gin.Context) {
 
 	// Get a get the task todo
 	var task models.Task
-	initializers.DB.First(&task, taskId)
+	var response = initializers.DB.First(&task, taskId)
+	// fmt.Print(response)
+	// fmt.Println(response.Error)
+	if response.Error == nil {
+		// Return todo in response
+		c.JSON(200, gin.H{
+			"data":    task,
+			"message": "Fetched Successfully",
+		})
+	} else {
+		pgError := response.Error.(*pgconn.PgError)
+		fmt.Print("Error Code: ", pgError.Code)
 
-	// Return todo in response
-	c.JSON(200, gin.H{
-		"data":    task,
-		"message": "Fetched Successfully",
-	})
+		c.JSON(500, gin.H{
+			"code":    pgError.Code,
+			"message": pgError.Message,
+		})
+	}
 }
 
 func UpdateTask(c *gin.Context) {
@@ -94,17 +108,15 @@ func DeleteTask(c *gin.Context) {
 	var response = initializers.DB.Delete(&models.Task{}, id)
 
 	if response.Error != nil {
-		// if dbErr, ok := response.Error.(); ok {
-		// 	switch dbErr.Number {
-		// 	case 1062: // MySQL code for duplicate entry
-		// 		// Handle duplicate entry
-		// 	// Add cases for other specific error codes
-		// 	default:
-		// 		// Handle other errors
-		// 	}
-		// } else {
-		// 	// Handle non-MySQL errors or unknown errors
-		// }
+		if pgError, ok := response.Error.(*pgconn.PgError); ok {
+			fmt.Print(pgError.Code)
+			// if pgError.Code == UniqueViolation && pgError.ConstraintName == "users_email_key" {
+			// 	// Handle specifically the email constraint broken
+			// }
+			// // Handle unknown error
+		} else {
+			// Handle non-MySQL errors or unknown errors
+		}
 	} else {
 		// Return response
 		c.JSON(200, gin.H{

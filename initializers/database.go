@@ -31,5 +31,9 @@ func ConnectDB() {
 		log.Fatal(err)
 	}
 
-	DB.AutoMigrate(&models.Task{})
+	err = DB.AutoMigrate(&models.Task{})
+	if err != nil {
+		log.Fatal("Failed to Load Model")
+		log.Fatal(err)
+	}
 }
