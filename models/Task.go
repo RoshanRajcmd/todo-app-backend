@@ -3,7 +3,6 @@ package models
 import "gorm.io/gorm"
 
 type Task struct {
-	//ID      uint `gorm:"primary key;autoIncrement" json:"id"`
 	gorm.Model
 	Content string
 	IsRead  bool

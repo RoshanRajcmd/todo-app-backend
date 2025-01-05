@@ -1,12 +1,11 @@
 package controllers
 
 import (
-	"fmt"
+	"net/http"
 
 	"github.com/RoshanRajcmd/todo-app-backend/initializers"
 	"github.com/RoshanRajcmd/todo-app-backend/models"
 	"github.com/gin-gonic/gin"
-	"github.com/jackc/pgx/v5/pgconn"
 )
 
 func CreateTask(c *gin.Context) {
@@ -20,15 +19,19 @@ func CreateTask(c *gin.Context) {
 	// Create a todo
 	//var task = models.Task{Content: body.Content, IsRead: body.IsRead}
 	var task = models.NewTask(body.Content, body.IsRead)
-	var result = initializers.DB.Create(&task)
+	var response = initializers.DB.Create(&task)
 
-	if result.Error != nil {
-		c.Status(400)
+	if response.Error != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"status":  http.StatusNotFound,
+			"message": response.Error.Error(),
+		})
 		return
 	}
 
 	// Return it
 	c.JSON(200, gin.H{
+		"status":  http.StatusOK,
 		"data":    task,
 		"message": "Task Created Successfully",
 	})
@@ -37,10 +40,19 @@ func CreateTask(c *gin.Context) {
 func GetAllTasks(c *gin.Context) {
 	// Get all the tasks
 	var tasks []models.Task
-	initializers.DB.Find(&tasks)
+	var response = initializers.DB.Find(&tasks)
+
+	if response.Error != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"status":  http.StatusNotFound,
+			"message": response.Error.Error(),
+		})
+		return
+	}
 
 	// Return todos in response
 	c.JSON(200, gin.H{
+		"status":  http.StatusOK,
 		"data":    tasks,
 		"message": "Fetched Successfully",
 	})
@@ -53,23 +65,20 @@ func GetTaskById(c *gin.Context) {
 	// Get a get the task todo
 	var task models.Task
 	var response = initializers.DB.First(&task, taskId)
-	// fmt.Print(response)
-	// fmt.Println(response.Error)
-	if response.Error == nil {
-		// Return todo in response
-		c.JSON(200, gin.H{
-			"data":    task,
-			"message": "Fetched Successfully",
+	if response.Error != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"status":  http.StatusNotFound,
+			"message": response.Error.Error(),
 		})
-	} else {
-		pgError := response.Error.(*pgconn.PgError)
-		fmt.Print("Error Code: ", pgError.Code)
-
-		c.JSON(500, gin.H{
-			"code":    pgError.Code,
-			"message": pgError.Message,
-		})
+		return
 	}
+
+	c.JSON(200, gin.H{
+		"status":  http.StatusOK,
+		"data":    task,
+		"message": "Fetched Successfuly",
+	})
+
 }
 
 func UpdateTask(c *gin.Context) {
@@ -79,23 +88,39 @@ func UpdateTask(c *gin.Context) {
 	// get the data of req body
 	var body struct {
 		Content string
-		Status  bool
+		IsRead  bool
 	}
 	c.Bind(&body)
 
 	// Get a single todo that we want to update
-	var todo models.Task
-	initializers.DB.First(&todo, id)
+	// Check if the task exists
+	var task models.Task
+	var findResponse = initializers.DB.First(&task, id)
+	if findResponse.Error != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"status":  http.StatusNotFound,
+			"message": "Task not found",
+		})
+		return
+	}
 
 	// Update it
-	initializers.DB.Model(&todo).Updates(models.Task{
+	var updateResponse = initializers.DB.Model(&task).Select("Content", "IsRead").Updates(models.Task{
 		Content: body.Content,
-		IsRead:  body.Status,
-	})
+		IsRead:  body.IsRead})
+
+	if updateResponse.Error != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"status":  http.StatusNotFound,
+			"message": updateResponse.Error.Error(),
+		})
+		return
+	}
 
 	// Return response
 	c.JSON(200, gin.H{
-		"data":    todo,
+		"status":  http.StatusOK,
+		"data":    task,
 		"message": "Updated Task Successfully",
 	})
 }
@@ -104,23 +129,30 @@ func DeleteTask(c *gin.Context) {
 	// Get id from URL param
 	var id = c.Param("id")
 
-	// Delete the Todo
-	var response = initializers.DB.Delete(&models.Task{}, id)
-
-	if response.Error != nil {
-		if pgError, ok := response.Error.(*pgconn.PgError); ok {
-			fmt.Print(pgError.Code)
-			// if pgError.Code == UniqueViolation && pgError.ConstraintName == "users_email_key" {
-			// 	// Handle specifically the email constraint broken
-			// }
-			// // Handle unknown error
-		} else {
-			// Handle non-MySQL errors or unknown errors
-		}
-	} else {
-		// Return response
-		c.JSON(200, gin.H{
-			"message": "Task removed Successfully",
+	// Check if the task exists
+	var task models.Task
+	var findResponse = initializers.DB.First(&task, id)
+	if findResponse.Error != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"status":  http.StatusNotFound,
+			"message": "Task not found",
 		})
+		return
 	}
+
+	// Delete the Task
+	var deleteResponse = initializers.DB.Delete(&task)
+	if deleteResponse.Error != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"status":  http.StatusNotFound,
+			"message": deleteResponse.Error.Error(),
+		})
+		return
+	}
+
+	// Return response
+	c.JSON(200, gin.H{
+		"status":  http.StatusOK,
+		"message": "Task removed Successfully",
+	})
 }
