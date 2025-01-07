@@ -10,15 +10,15 @@ BackEnd: https://github.com/RoshanRajcmd/todo-app-backend
 
 ## Tech Stack and Packages
 
-React.js
+* React.js
+* PostgreSQL
+* Golabg with GIN and GORM
 
 ## Features
 
-Add a Task
-Edit a Task
-Delete a Task
+Fetch, Add, Edit, Delete Tasks
 
-## Development server
+## Developer setup
 
 *For Client* 
 
