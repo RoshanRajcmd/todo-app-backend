@@ -23,10 +23,12 @@ Run `npm start` for a dev server. Navigate to `http://localhost:8080/` in a brow
 Run `go run cmd/main.go`. Change the server hosting post from `3000` to your desired one. You need to manually restart the server if you change any of the source files.
 
 *For DB*
-The server look for Postgresql DB connection under the Env variable named `DB_URL` formated as "postgres://<username>:<password>@<host>:<dbport>"
+
+The server looks for Postgresql DB connection under the Env variable named `DB_URL` formatted as "postgres://dbusername:dbpassword@host:dbport"
 
 ## Screenshots
 
-![Screenshot 2024-12-29 at 4 32 30 PM](https://github.com/user-attachments/assets/e15f78cf-9467-4c9f-8e67-15e2da37c6ee)
-![Screenshot 2024-12-29 at 4 33 46 PM](https://github.com/user-attachments/assets/354d59d0-4c6f-4fc7-82a6-fcbccb6cf6fa)
-![Screenshot 2024-12-29 at 4 34 26 PM](https://github.com/user-attachments/assets/adb3953d-e6a4-4e10-9607-7ad760f63c0c)
+<img width="1469" alt="Screenshot 2025-01-07 at 3 12 10 PM" src="https://github.com/user-attachments/assets/e36230b9-e31a-4c22-8e0a-244ad1034451" />
+<img width="1469" alt="Screenshot 2025-01-07 at 3 12 47 PM" src="https://github.com/user-attachments/assets/ddce4e90-bb36-4c97-950a-d65ccbbfc047" />
+<img width="1469" alt="Screenshot 2025-01-07 at 3 14 23 PM" src="https://github.com/user-attachments/assets/5d7a4d4e-2188-4fc9-8972-3b1afff6fddf" />
+<img width="1469" alt="Screenshot 2025-01-07 at 3 14 39 PM" src="https://github.com/user-attachments/assets/7ee0385c-b62a-4a60-a52d-2d82ea0a5ab2" />
