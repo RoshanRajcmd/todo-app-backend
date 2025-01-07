@@ -23,7 +23,8 @@ Run `npm start` for a dev server. Navigate to `http://localhost:8080/` in a brow
 Run `go run cmd/main.go`. Change the server hosting post from `3000` to your desired one. You need to manually restart the server if you change any of the source files.
 
 *For DB*
-The server look for Postgresql DB connection under the Env variable named `DB_URL` formated as "postgres://<username>:<password>@<host>:<dbport>"
+
+The server looks for Postgresql DB connection under the Env variable named `DB_URL` formatted as "postgres://<username>:<password>@<host>:<dbport>"
 
 ## Screenshots
 
