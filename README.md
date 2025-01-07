@@ -18,7 +18,7 @@ BackEnd: https://github.com/RoshanRajcmd/todo-app-backend
 
 Fetch, Add, Edit, Delete Tasks
 
-## Development server
+## Developer setup
 
 *For Client* 
 
