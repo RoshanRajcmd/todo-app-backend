@@ -16,7 +16,7 @@ func CreateTask(c *gin.Context) {
 	}
 	c.Bind(&body)
 
-	// Create a todo
+	// Create a Task
 	//var task = models.Task{Content: body.Content, IsRead: body.IsRead}
 	var task = models.NewTask(body.Content, body.IsRead)
 	var response = initializers.DB.Create(&task)
@@ -50,7 +50,7 @@ func GetAllTasks(c *gin.Context) {
 		return
 	}
 
-	// Return todos in response
+	// Return Tasks in response
 	c.JSON(200, gin.H{
 		"status":  http.StatusOK,
 		"data":    tasks,
@@ -62,7 +62,7 @@ func GetTaskById(c *gin.Context) {
 	// Get id from URL param
 	var taskId = c.Param("id")
 
-	// Get a get the task todo
+	// Get the task model defined for DB
 	var task models.Task
 	var response = initializers.DB.First(&task, taskId)
 	if response.Error != nil {
@@ -92,8 +92,8 @@ func UpdateTask(c *gin.Context) {
 	}
 	c.Bind(&body)
 
-	// Get a single todo that we want to update
-	// Check if the task exists
+	// Get a single Task that we want to update
+	// Check if the Task exists
 	var task models.Task
 	var findResponse = initializers.DB.First(&task, id)
 	if findResponse.Error != nil {

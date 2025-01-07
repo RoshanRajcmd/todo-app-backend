@@ -15,11 +15,11 @@ func init() {
 func main() {
 
 	var router = gin.Default()
-	// Use the CORS middleware defined below
+	// Use the CORS middleware definition to allow cross-origin requests
 	router.Use(corsMiddleware())
 
 	// Todo Routes
-	routes.TodoRoutes(router)
+	routes.TaskRoutes(router)
 
 	router.Run()
 }
@@ -55,7 +55,7 @@ func corsMiddleware() gin.HandlerFunc {
 			c.Writer.Header().Set("Access-Control-Allow-Origin", origin)
 			c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
 			c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
-			c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT")
+			c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT, DELETE")
 		}
 
 		// Handle preflight OPTIONS requests by aborting with status 204
