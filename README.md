@@ -16,11 +16,14 @@ Delete a Task
 
 *For Client* 
 
-Run `npm start` for a dev server. Navigate to `http://localhost:3000/` in a browser. The app will automatically reload if you change any of the source files.
+Run `npm start` for a dev server. Navigate to `http://localhost:8080/` in a browser. The app will automatically reload if you change any of the source files.
 
 *For Server*
 
-Run `go run main.go`. Change the DB hosting post from `5432` to your local hosting and post. You need to manually restart the server if you change any of the source files.
+Run `go run cmd/main.go`. Change the server hosting post from `3000` to your desired one. You need to manually restart the server if you change any of the source files.
+
+*For DB*
+The server look for Postgresql DB connection under the Env variable named `DB_URL` formated as "postgres://<username>:<password>@<host>:<dbport>"
 
 ## Screenshots
 

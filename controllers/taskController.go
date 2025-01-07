@@ -11,14 +11,14 @@ import (
 func CreateTask(c *gin.Context) {
 	// Get data from req body
 	var body struct {
-		Content string
-		IsRead  bool
+		Content     string
+		IsCompleted bool
 	}
 	c.Bind(&body)
 
-	// Create a todo
-	//var task = models.Task{Content: body.Content, IsRead: body.IsRead}
-	var task = models.NewTask(body.Content, body.IsRead)
+	// Create a Task
+	//var task = models.Task{Content: body.Content, IsCompleted: body.IsCompleted}
+	var task = models.NewTask(body.Content, body.IsCompleted)
 	var response = initializers.DB.Create(&task)
 
 	if response.Error != nil {
@@ -50,7 +50,7 @@ func GetAllTasks(c *gin.Context) {
 		return
 	}
 
-	// Return todos in response
+	// Return Tasks in response
 	c.JSON(200, gin.H{
 		"status":  http.StatusOK,
 		"data":    tasks,
@@ -62,7 +62,7 @@ func GetTaskById(c *gin.Context) {
 	// Get id from URL param
 	var taskId = c.Param("id")
 
-	// Get a get the task todo
+	// Get the task model defined for DB
 	var task models.Task
 	var response = initializers.DB.First(&task, taskId)
 	if response.Error != nil {
@@ -87,13 +87,21 @@ func UpdateTask(c *gin.Context) {
 
 	// get the data of req body
 	var body struct {
-		Content string
-		IsRead  bool
+		Content     string
+		IsCompleted bool
 	}
-	c.Bind(&body)
 
-	// Get a single todo that we want to update
-	// Check if the task exists
+	// Bind the json data from body
+	if err := c.ShouldBindJSON(&body); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status":  http.StatusBadRequest,
+			"message": err.Error(),
+		})
+		return
+	}
+
+	// Get a single Task that we want to update
+	// Check if the Task exists
 	var task models.Task
 	var findResponse = initializers.DB.First(&task, id)
 	if findResponse.Error != nil {
@@ -105,9 +113,9 @@ func UpdateTask(c *gin.Context) {
 	}
 
 	// Update it
-	var updateResponse = initializers.DB.Model(&task).Select("Content", "IsRead").Updates(models.Task{
-		Content: body.Content,
-		IsRead:  body.IsRead})
+	var updateResponse = initializers.DB.Model(&task).Select("Content", "IsCompleted").Updates(models.Task{
+		Content:     body.Content,
+		IsCompleted: body.IsCompleted})
 
 	if updateResponse.Error != nil {
 		c.JSON(http.StatusNotFound, gin.H{

@@ -5,7 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func TodoRoutes(r *gin.Engine) {
+func TaskRoutes(r *gin.Engine) {
 	var userGroup = r.Group("/todos")
 	{
 		// Task Routes
