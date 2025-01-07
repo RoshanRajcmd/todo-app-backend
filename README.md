@@ -24,7 +24,7 @@ Run `go run cmd/main.go`. Change the server hosting post from `3000` to your des
 
 *For DB*
 
-The server looks for Postgresql DB connection under the Env variable named `DB_URL` formatted as "postgres://<username>:<password>@<host>:<dbport>"
+The server looks for Postgresql DB connection under the Env variable named `DB_URL` formatted as "postgres://dbusername:dbpassword@host:dbport"
 
 ## Screenshots
 
