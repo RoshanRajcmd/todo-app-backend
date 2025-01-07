@@ -4,11 +4,11 @@ import "gorm.io/gorm"
 
 type Task struct {
 	gorm.Model
-	Content string
-	IsRead  bool
+	Content     string
+	IsCompleted bool
 }
 
 // Constructor function
-func NewTask(content string, isRead bool) *Task {
-	return &Task{Content: content, IsRead: isRead}
+func NewTask(content string, IsCompleted bool) *Task {
+	return &Task{Content: content, IsCompleted: IsCompleted}
 }
