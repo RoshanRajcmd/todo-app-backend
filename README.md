@@ -10,7 +10,9 @@ BackEnd: https://github.com/RoshanRajcmd/todo-app-backend
 
 ## Tech Stack and Packages
 
-React.js
+* React.js
+* PostgreSQL
+* Golabg with GIN and GORM
 
 ## Features
 
