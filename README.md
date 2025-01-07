@@ -16,9 +16,7 @@ BackEnd: https://github.com/RoshanRajcmd/todo-app-backend
 
 ## Features
 
-Add a Task
-Edit a Task
-Delete a Task
+Fetch, Add, Edit, Delete Tasks
 
 ## Development server
 
